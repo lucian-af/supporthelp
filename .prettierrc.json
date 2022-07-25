@@ -1,0 +1,22 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "*.tsx",
+        "*.js"
+      ],
+      "options": {
+        "bracketSpacing": true,
+        "endOfLine": "lf",
+        "printWidth": 120,
+        "semi": true,
+        "trailingComma": "none",
+        "arrowParens": "avoid",
+        "htmlWhitespaceSensitivity": "css",
+        "bracketSameLine": true,
+        "singleAttributePerLine": true,
+        "parser": "typescript"
+      }
+    }
+  ]
+}
