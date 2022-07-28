@@ -1,10 +1,44 @@
-import { useTheme, VStack } from "native-base";
+import firestore from "@react-native-firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import { VStack } from "native-base";
+import { useState } from "react";
+import { Alert } from "react-native";
 import { Button } from "../components/Button";
 import { Header } from "../components/Header";
 import { Input } from "../components/Input";
 
 export function Register() {
-  const { colors } = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
+  const [patrimony, setPatrimony] = useState("");
+  const [description, setDescription] = useState("");
+  const navigation = useNavigation();
+
+  function handleNewOrder() {
+    if (!patrimony || !description) {
+      return Alert.alert("Solicitação", "Preencha todos os campos.");
+    }
+
+    setIsLoading(true);
+
+    firestore()
+      .collection("orders")
+      .add({
+        patrimony,
+        description,
+        status: "open",
+        created_at: firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        Alert.alert("Solicitação", "Solicitação registrada com sucesso.");
+        navigation.goBack();
+      })
+      .catch(error => {
+        console.log(error);
+        setIsLoading(false);
+        return Alert.alert("Solicitação", "Não foi possível registrar a solicitação");
+      });
+  }
+
   return (
     <VStack
       flex={1}
@@ -16,6 +50,7 @@ export function Register() {
         placeholder="Número do Patrimônio"
         bg="gray.700"
         p={4}
+        onChangeText={setPatrimony}
       />
 
       <Input
@@ -26,11 +61,14 @@ export function Register() {
         textAlignVertical="top"
         p={4}
         multiline
+        onChangeText={setDescription}
       />
 
       <Button
         title="Cadastrar"
         mt={5}
+        onPress={handleNewOrder}
+        isLoading={isLoading}
       />
     </VStack>
   );
